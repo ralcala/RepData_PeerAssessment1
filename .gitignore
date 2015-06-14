@@ -21,6 +21,5 @@ vignettes/*.pdf
 *.csv
 
 # Generated files.
-*.html
 .Rproj.user
 Thumbs.db
