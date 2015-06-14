@@ -1,22 +1,15 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-author: "Roberto J. Alcalá Sánchez"
-date: "10 June 2015"
-output:
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
+Roberto J. Alcalá Sánchez  
+10 June 2015  
 
-```{r options, echo = FALSE}
-# Do not show numbers in scientific notation.
-options(scipen = 10)
-```
+
 
 ## Loading and preprocessing the data.
 
 Load the data specifying the column types, this way the date variable is imported as a R date column instead of a factor (or a character vector), and integer columns are of type integer and not numeric.
 
-```{r load_data, echo = TRUE}
+
+```r
 # Load the data with the appropiate column types.
 data <- read.csv("activity.csv", colClasses = c("integer", "POSIXct", "integer"))
 ```
@@ -24,7 +17,8 @@ data <- read.csv("activity.csv", colClasses = c("integer", "POSIXct", "integer")
 
 ## What is mean total number of steps taken per day?
 
-```{r mean_steps_per_day, echo = TRUE}
+
+```r
 library(ggplot2)
 
 # Get the total number of steps per day, ignoring missing values.
@@ -35,19 +29,26 @@ total_steps <- data.frame(date = unique(data$date), steps = as.vector(ans))
 qplot(total_steps$steps, geom = "histogram", fill = I("blue"), binwidth = 2000, xlab = "Steps", main = "Histogram for steps/day")
 ```
 
-The mean is **`r round(mean(total_steps$steps), 1)`** and the median is **`r median(total_steps$steps)`**.
+![](PA1_template_files/figure-html/mean_steps_per_day-1.png) 
+
+The mean is **9354.2** and the median is **10395**.
 
 
 ## What is the average daily activity pattern?
 
-```{r average_daily_activity_patterns, echo = TRUE}
+
+```r
 # Get the mean number of steps per interval, ignoring missing values.
 ans <- tapply(data$steps, data$interval, mean, na.rm = TRUE)
 
 interval_mean <- data.frame(interval = unique(data$interval), mean = as.vector(ans))
 
 qplot(interval, mean, data = interval_mean, geom = "line", main = "Average daily activity")
+```
 
+![](PA1_template_files/figure-html/average_daily_activity_patterns-1.png) 
+
+```r
 # Find the maximum average.
 max_avg  <- max(interval_mean$mean)
 # Find the index position of the maximum average.
@@ -56,13 +57,14 @@ max_idx  <- which(interval_mean$mean == max_avg)
 interval <- interval_mean$interval[max_idx]
 ```
 
-The interval with the maximum daily average, **`r max_avg`**, correponds with **`r interval`**.
+The interval with the maximum daily average, **206.1698113**, correponds with **835**.
 
 ## Imputing missing values.
 
-The number of missing values (nr. of rows) is **`r sum(is.na(data$steps))`**.
+The number of missing values (nr. of rows) is **2304**.
 
-```{r imputing_missing_values, echo = TRUE}
+
+```r
 # Detect missing values.
 missing <- which(is.na(data$steps))
 
@@ -85,16 +87,25 @@ total_steps <- data.frame(date = unique(data_nomiss$date), steps = as.vector(ans
 qplot(total_steps$steps, geom = "histogram", fill = I("blue"), binwidth = 2000, xlab = "Steps", main = "Histogram for steps/day")
 ```
 
-The mean is **`r round(mean(total_steps$steps), 1)`** and the median is **`r round(median(total_steps$steps), 1)`**.
+![](PA1_template_files/figure-html/imputing_missing_values-1.png) 
+
+The mean is **10766.2** and the median is **10766.2**.
 
 The values has increases compared to the results obtained in the first part. This is because missing values (value NA in R) were treated as zeros and so the histogram showed a tall bar in bin containing the zero value. Now the imputed value is the mean, so there are few values in the zero bin and more in the bin corresponding to the mean.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r differences_activity_weekdays_weekends, echo = TRUE}
-Sys.setlocale("LC_ALL", "English")
 
+```r
+Sys.setlocale("LC_ALL", "English")
+```
+
+```
+## [1] "LC_COLLATE=English_United States.1252;LC_CTYPE=English_United States.1252;LC_MONETARY=English_United States.1252;LC_NUMERIC=C;LC_TIME=English_United States.1252"
+```
+
+```r
 # Create a factor variable indicating the day type (weeday or weekend).
 data$daytype <- factor(sapply(data$date, function (date) {
     if (weekdays(date) %in% c("Saturday", "Sunday")) {
@@ -131,6 +142,8 @@ total_steps$daytype <- factor(total_steps$daytype)
 
 qplot(interval, steps, data = total_steps, geom = "line", facets = daytype ~ ., main = "Activity patterns between weekdays and weekends")
 ```
+
+![](PA1_template_files/figure-html/differences_activity_weekdays_weekends-1.png) 
 
 We can clearly see that in weekdays, the people walk a lot around 6 AM and 9 AM, and a high spike between 7 and 8 AM, when most people go to work. The people also walks a little bit more around 5 and 8 PM, when returning home.
 
