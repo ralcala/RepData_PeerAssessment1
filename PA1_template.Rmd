@@ -62,6 +62,8 @@ The interval with the maximum daily average, **`r max_avg`**, correponds with **
 
 The number of missing values (nr. of rows) is **`r sum(is.na(data$steps))`**.
 
+The strategy for imputing values will be assigning the mean value of steps for the interval of time.
+
 ```{r imputing_missing_values, echo = TRUE}
 # Detect missing values.
 missing <- which(is.na(data$steps))

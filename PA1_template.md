@@ -63,6 +63,8 @@ The interval with the maximum daily average, **206.1698113**, correponds with **
 
 The number of missing values (nr. of rows) is **2304**.
 
+The strategy for imputing values will be assigning the mean value of steps for the interval of time.
+
 
 ```r
 # Detect missing values.

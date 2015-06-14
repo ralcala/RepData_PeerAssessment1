@@ -107,6 +107,7 @@ interval &lt;- interval_mean$interval[max_idx]</code></pre>
 <div id="imputing-missing-values." class="section level2">
 <h2>Imputing missing values.</h2>
 <p>The number of missing values (nr. of rows) is <strong>2304</strong>.</p>
+<p>The strategy for imputing values will be assigning the mean value of steps for the interval of time.</p>
 <pre class="r"><code># Detect missing values.
 missing &lt;- which(is.na(data$steps))
 
